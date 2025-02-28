@@ -1,0 +1,17 @@
+# 패키징 결과물
+/bin
+
+# DB 설정
+/db
+
+# 컴파일 결과
+/dist
+
+# 환경변수
+/env
+
+# 기타 파일
+/node_modules
+
+# log 
+/logs
