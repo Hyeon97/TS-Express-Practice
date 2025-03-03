@@ -23,12 +23,20 @@ npm install -D pkg
 npm install winston morgan winston-daily-rotate-file
 npm install -D @types/morgan
 
+# 현재 재공중인 엔드포인트 로깅
+npm install -D express-list-endpoints
+npm install -D @types/express-list-endpoints
+
 # 데이터베이스
 npm install mysql2
 
 # 기타
 npm install uuid
 npm install -D @types/uuid
+
+# 출력 정렬
+npm install columnify
+npm install -D @types/columnify
 ```
 
 # 실행
