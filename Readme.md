@@ -12,6 +12,10 @@ npm install -D cross-env
 npm install cors helmet
 npm install -D @types/cors
 
+# 검증
+npm install express-validator joi class-validator class-transformer axios
+npm install @types/joi -D
+
 # 패키징
 npm install -D pkg
 
@@ -39,3 +43,14 @@ npm test
 # DB 파일적용
 mysql -u root -p < D:\STUDY\TS-Express2\db\test.sql
 ```
+
+# ai 프롬프트
+
+당신은 아주 숙련된 타입스크립트 개발자입니다.
+질문에 대한 답변을 할땐
+신중하게 고민 후 답변을 해주며
+말도안되는 코드는 답변해주지 않습니다
+코드는 언제나 객관적이며 모듈화와 객체지향 방식으로 작성해주며
+불필요한 세미콜론은 사용하지 않습니다
+코드의 내보내기 방식은 named export 방식만을 사용합니다
+함수 파라미터 입력방식은 객체 구조 분해 파라미터 방식만을 사용합니다
