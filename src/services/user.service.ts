@@ -1,8 +1,10 @@
 import { userRepository } from "../repositories/user.repository"
 import { User, CreateUserDTO, UpdateUserDTO } from "../types/user"
 import { logger } from "../utils/logger"
-import { ApiError, UserError } from "../middleware/errorMiddleware"
+// import { ApiError, UserError } from "../middleware/errorMiddleware"
 import { CryptoUtils } from "../utils/crypto.utils"
+import { ApiError } from "../errors/api-error"
+import { UserError } from "../errors/domain-errors/user-error"
 
 export class UserService {
   /**
@@ -16,7 +18,7 @@ export class UserService {
       return users
     } catch (error) {
       logger.error("사용자 목록 조회 중 오류 발생", error)
-      throw ApiError.databaseError("사용자 목록을 조회하는 중에 오류가 발생했습니다")
+      throw ApiError.databaseError({ message: "사용자 목록을 조회하는 중에 오류가 발생했습니다" })
     }
   }
 
@@ -30,7 +32,7 @@ export class UserService {
 
       if (!user) {
         logger.warn(`ID ${id}인 사용자를 찾을 수 없습니다`)
-        throw ApiError.notFound(`ID가 ${id}인 사용자를 찾을 수 없습니다`)
+        throw ApiError.notFound({ message: `ID가 ${id}인 사용자를 찾을 수 없습니다` })
       }
 
       logger.debug(`ID ${id} 사용자 조회 성공`)
@@ -39,7 +41,7 @@ export class UserService {
       if (error instanceof ApiError) throw error
 
       logger.error(`ID ${id} 사용자 조회 중 오류 발생`, error)
-      throw ApiError.databaseError("사용자 정보를 조회하는 중에 오류가 발생했습니다")
+      throw ApiError.databaseError({ message: "사용자 정보를 조회하는 중에 오류가 발생했습니다" })
     }
   }
 
@@ -52,7 +54,7 @@ export class UserService {
       return await userRepository.findByEmail({ email })
     } catch (error) {
       logger.error(`이메일 ${email} 사용자 조회 중 오류 발생`, error)
-      throw ApiError.databaseError("사용자 정보를 조회하는 중에 오류가 발생했습니다")
+      throw ApiError.databaseError({ message: "사용자 정보를 조회하는 중에 오류가 발생했습니다" })
     }
   }
 
@@ -99,7 +101,7 @@ export class UserService {
       if (error instanceof ApiError) throw error
 
       logger.error("사용자 인증 중 오류 발생", error)
-      throw ApiError.internal("사용자 인증 중에 오류가 발생했습니다")
+      throw ApiError.internal({ message: "사용자 인증 중에 오류가 발생했습니다" })
     }
   }
 
@@ -163,7 +165,7 @@ export class UserService {
       if (error instanceof ApiError) throw error
 
       logger.error("사용자 생성 중 오류 발생", error)
-      throw ApiError.internal("사용자를 생성하는 중에 오류가 발생했습니다")
+      throw ApiError.internal({ message: "사용자를 생성하는 중에 오류가 발생했습니다" })
     }
   }
 
@@ -208,7 +210,7 @@ export class UserService {
       if (error instanceof ApiError) throw error
 
       logger.error("고급 사용자 생성 중 오류 발생", error)
-      throw ApiError.internal("사용자를 생성하는 중에 오류가 발생했습니다")
+      throw ApiError.internal({ message: "사용자를 생성하는 중에 오류가 발생했습니다" })
     }
   }
 
@@ -224,7 +226,7 @@ export class UserService {
 
       if (!existingUser) {
         logger.warn(`ID ${id}인 사용자를 찾을 수 없습니다`)
-        throw ApiError.notFound(`ID가 ${id}인 사용자를 찾을 수 없습니다`)
+        throw ApiError.notFound({ message: `ID가 ${id}인 사용자를 찾을 수 없습니다` })
       }
 
       // 이메일 변경 시 중복 확인
@@ -249,7 +251,7 @@ export class UserService {
       const updatedUser = await userRepository.update({ id, userData: updatedUserData })
 
       if (!updatedUser) {
-        throw ApiError.internal("사용자 정보를 업데이트하지 못했습니다")
+        throw ApiError.internal({ message: "사용자 정보를 업데이트하지 못했습니다" })
       }
 
       logger.info(`사용자 ID ${id} 정보 업데이트 성공`)
@@ -258,7 +260,7 @@ export class UserService {
       if (error instanceof ApiError) throw error
 
       logger.error(`ID ${id} 사용자 업데이트 중 오류 발생`, error)
-      throw ApiError.internal("사용자 정보를 업데이트하는 중에 오류가 발생했습니다")
+      throw ApiError.internal({ message: "사용자 정보를 업데이트하는 중에 오류가 발생했습니다" })
     }
   }
 
@@ -274,14 +276,14 @@ export class UserService {
 
       if (!existingUser) {
         logger.warn(`ID ${id}인 사용자를 찾을 수 없습니다`)
-        throw ApiError.notFound(`ID가 ${id}인 사용자를 찾을 수 없습니다`)
+        throw ApiError.notFound({ message: `ID가 ${id}인 사용자를 찾을 수 없습니다` })
       }
 
       // 사용자 삭제
       const deleted = await userRepository.delete({ id })
 
       if (!deleted) {
-        throw ApiError.internal("사용자를 삭제하지 못했습니다")
+        throw ApiError.internal({ message: "사용자를 삭제하지 못했습니다" })
       }
 
       logger.info(`사용자 ID ${id} 삭제 성공`)
@@ -289,7 +291,7 @@ export class UserService {
       if (error instanceof ApiError) throw error
 
       logger.error(`ID ${id} 사용자 삭제 중 오류 발생`, error)
-      throw ApiError.internal("사용자를 삭제하는 중에 오류가 발생했습니다")
+      throw ApiError.internal({ message: "사용자를 삭제하는 중에 오류가 발생했습니다" })
     }
   }
 

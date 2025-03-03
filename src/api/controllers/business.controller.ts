@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express"
-import { userService } from "../../services/user.service"
 import { businessService } from "../../services/business.service"
 import { logger } from "../../utils/logger"
-import { ApiError, UserError } from "../../middleware/errorMiddleware"
 import { ApiUtils } from "../../utils/api.utils"
 import { BusinessResponseDto } from "../../dtos/user/business.dto"
 
@@ -21,16 +19,16 @@ export class BusinessController {
       const validationResult = await businessService.validateBusinessNumber(businessNumber)
 
       // 성공 응답
-      ApiUtils.success(
+      ApiUtils.success({
         res,
-        {
+        data: {
           valid: validationResult.isValid,
           businessNumber,
           companyInfo: validationResult.isValid ? validationResult.companyInfo : null,
         },
-        200,
-        validationResult.isValid ? "유효한 사업자 등록번호입니다" : "유효하지 않은 사업자 등록번호입니다"
-      )
+        statusCode: 200,
+        message: validationResult.isValid ? "유효한 사업자 등록번호입니다" : "유효하지 않은 사업자 등록번호입니다",
+      })
     } catch (error) {
       next(error)
     }
@@ -55,7 +53,7 @@ export class BusinessController {
       logger.info(`새 기업 계정이 생성되었습니다. ID: ${newBusiness.id}, 회사명: ${newBusiness.company_name}`)
 
       // 응답 생성
-      ApiUtils.success(res, businessDTO, 201, "기업 계정이 성공적으로 생성되었습니다")
+      ApiUtils.success({ res, data: businessDTO, statusCode: 201, message: "기업 계정이 성공적으로 생성되었습니다" })
     } catch (error) {
       next(error)
     }
@@ -77,7 +75,7 @@ export class BusinessController {
       logger.info(`총 ${businesses.length}개의 기업 계정 정보를 조회했습니다.`)
 
       // 응답 생성
-      ApiUtils.success(res, businessDTOs)
+      ApiUtils.success({ res, data: businessDTOs })
     } catch (error) {
       next(error)
     }
@@ -102,7 +100,7 @@ export class BusinessController {
       logger.info(`ID: ${id} 기업 계정 정보를 성공적으로 조회했습니다.`)
 
       // 응답 생성
-      ApiUtils.success(res, businessDTO)
+      ApiUtils.success({ res, data: businessDTO })
     } catch (error) {
       next(error)
     }

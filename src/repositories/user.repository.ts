@@ -15,10 +15,7 @@ export class UserRepository {
    */
   async findAll({}: {} = {}): Promise<User[]> {
     const query = `
-      SELECT u.*, COUNT(l.id) as login_failures, l.lock_until
-      FROM ${this.tableName} u
-      LEFT JOIN user_login_attempts l ON u.id = l.user_id AND l.success = 0 AND l.created_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)
-      GROUP BY u.id
+      SELECT * FROM ${this.tableName}
     `
     const users = await executeQuery<UserRow>({ sql: query })
 
@@ -33,7 +30,7 @@ export class UserRepository {
     const query = `
       SELECT u.*, COUNT(l.id) as login_failures, l.lock_until
       FROM ${this.tableName} u
-      LEFT JOIN user_login_attempts l ON u.id = l.user_id AND l.success = 0 AND l.created_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)
+      LEFT JOIN user_login_attempts l ON u.id = l.user_id AND l.success = 0 AND l.create_date > DATE_SUB(NOW(), INTERVAL 24 HOUR)
       WHERE u.id = ?
       GROUP BY u.id
     `
@@ -51,7 +48,7 @@ export class UserRepository {
     const query = `
       SELECT u.*, COUNT(l.id) as login_failures, l.lock_until
       FROM ${this.tableName} u
-      LEFT JOIN user_login_attempts l ON u.id = l.user_id AND l.success = 0 AND l.created_at > DATE_SUB(NOW(), INTERVAL 24 HOUR)
+      LEFT JOIN user_login_attempts l ON u.id = l.user_id AND l.success = 0 AND l.create_date > DATE_SUB(NOW(), INTERVAL 24 HOUR)
       WHERE u.email = ?
       GROUP BY u.id
     `
@@ -69,7 +66,7 @@ export class UserRepository {
     const now = new Date()
 
     const query = `
-      INSERT INTO ${this.tableName} (name, email, password, created_at, updated_at)
+      INSERT INTO ${this.tableName} (name, email, password, create_date, last_login_date)
       VALUES (?, ?, ?, ?, ?)
     `
 
@@ -107,8 +104,8 @@ export class UserRepository {
             email, 
             password, 
             marketing_consent,
-            created_at, 
-            updated_at
+            create_date, 
+            last_login_date
           ) VALUES (?, ?, ?, ?, ?, ?)
         `
 
@@ -123,8 +120,8 @@ export class UserRepository {
             user_id,
             phone,
             address,
-            created_at,
-            updated_at
+            create_date,
+            last_login_date
           ) VALUES (?, ?, ?, ?, ?)
         `
 
@@ -179,8 +176,8 @@ export class UserRepository {
       params.push(value)
     }
 
-    // updated_at 필드 자동 업데이트
-    setValues.push("updated_at = ?")
+    // last_login_date 필드 자동 업데이트
+    setValues.push("last_login_date = ?")
     params.push(new Date())
 
     // ID 파라미터 추가
@@ -218,7 +215,7 @@ export class UserRepository {
     const now = new Date()
 
     const query = `
-      INSERT INTO user_login_attempts (user_id, success, created_at)
+      INSERT INTO user_login_attempts (user_id, success, create_date)
       VALUES (?, 0, ?)
     `
 
@@ -234,7 +231,7 @@ export class UserRepository {
     const now = new Date()
 
     const query = `
-      INSERT INTO user_login_attempts (user_id, success, lock_until, created_at)
+      INSERT INTO user_login_attempts (user_id, success, lock_until, create_date)
       VALUES (?, 0, ?, ?)
     `
 
@@ -251,7 +248,7 @@ export class UserRepository {
 
     // 성공한 로그인 기록 추가
     const insertQuery = `
-      INSERT INTO user_login_attempts (user_id, success, created_at)
+      INSERT INTO user_login_attempts (user_id, success, create_date)
       VALUES (?, 1, ?)
     `
 
@@ -275,8 +272,8 @@ export class UserRepository {
   private mapDateFields({ user }: { user: UserRow }): User {
     return {
       ...user,
-      created_at: new Date(user.created_at),
-      updated_at: new Date(user.updated_at),
+      create_date: new Date(user.create_date),
+      last_login_date: new Date(user.last_login_date),
     }
   }
 
@@ -286,15 +283,15 @@ export class UserRepository {
   private mapUserData(user: UserRow): User {
     const mappedUser = this.mapDateFields({ user })
 
-    // 로그인 실패 횟수 추가
-    if (user.login_failures !== undefined) {
-      mappedUser.loginFailures = parseInt(user.login_failures as any, 10) || 0
-    }
+    // // 로그인 실패 횟수 추가
+    // if (user.login_failures !== undefined) {
+    //   mappedUser.loginFailures = parseInt(user.login_failures as any, 10) || 0
+    // }
 
-    // 계정 잠금 시간 추가
-    if (user.lock_until) {
-      mappedUser.lockUntil = new Date(user.lock_until)
-    }
+    // // 계정 잠금 시간 추가
+    // if (user.lock_until) {
+    //   mappedUser.lockUntil = new Date(user.lock_until)
+    // }
 
     return mappedUser
   }

@@ -20,8 +20,8 @@ type BusinessRow = {
   status: string
   marketing_consent: number
   data_processing_consent: number
-  created_at: Date
-  updated_at: Date
+  create_date: Date
+  last_login_date: Date
 } & RowDataPacket
 
 export class BusinessRepository {
@@ -132,8 +132,8 @@ export class BusinessRepository {
             status,
             marketing_consent,
             data_processing_consent,
-            created_at, 
-            updated_at
+            create_date, 
+            last_login_date
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `
 
@@ -163,8 +163,8 @@ export class BusinessRepository {
             city,
             state,
             zip_code,
-            created_at,
-            updated_at
+            create_date,
+            last_login_date
           ) VALUES (?, ?, ?, ?, ?, ?, ?)
         `
 
@@ -231,7 +231,7 @@ export class BusinessRepository {
 
         // 기업 계정 정보 업데이트
         if (Object.keys(businessFields).length > 0) {
-          businessFields.updated_at = now
+          businessFields.last_login_date = now
 
           const setClause = Object.keys(businessFields)
             .map((key) => `${key} = ?`)
@@ -250,7 +250,7 @@ export class BusinessRepository {
 
         // 주소 정보 업데이트
         if (Object.keys(addressFields).length > 0) {
-          addressFields.updated_at = now
+          addressFields.last_login_date = now
 
           const setClause = Object.keys(addressFields)
             .map((key) => `${key} = ?`)
@@ -293,8 +293,8 @@ export class BusinessRepository {
   private mapDateFields(business: BusinessRow) {
     return {
       ...business,
-      created_at: new Date(business.created_at),
-      updated_at: new Date(business.updated_at),
+      create_date: new Date(business.create_date),
+      last_login_date: new Date(business.last_login_date),
       // boolean 값으로 변환
       marketing_consent: !!business.marketing_consent,
       data_processing_consent: !!business.data_processing_consent,

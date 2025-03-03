@@ -1,6 +1,19 @@
 import { Response } from "express"
 import { ApiResponseDTO, PaginatedApiResponseDTO } from "../dtos/base.dto"
 
+interface SuccessResponseOptions<T> {
+  res: Response
+  data: T
+  statusCode?: number
+  message?: string
+}
+
+interface ErrorResponseOptions {
+  res: Response
+  error: string | string[]
+  statusCode: number
+}
+
 /**
  * API 응답 유틸리티
  */
@@ -8,7 +21,7 @@ export class ApiUtils {
   /**
    * 성공 응답 생성
    */
-  static success<T>(res: Response, data: T, statusCode = 200, message?: string): Response {
+  static success<T>({ res, data, statusCode = 200, message }: SuccessResponseOptions<T>): Response {
     const response: ApiResponseDTO<T> = {
       success: true,
       data,
@@ -52,7 +65,8 @@ export class ApiUtils {
   /**
    * 오류 응답 생성
    */
-  static error(res: Response, error: string | string[], statusCode = 400): Response {
+  // static error(res: Response, error: string | string[], statusCode = 400): Response {
+  static error({ res, error, statusCode }: ErrorResponseOptions): Response {
     const errorMessage = Array.isArray(error) ? error.join(", ") : error
 
     const response: ApiResponseDTO<null> = {

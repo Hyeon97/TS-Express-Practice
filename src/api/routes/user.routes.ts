@@ -1,3 +1,4 @@
+// src/routes/user.routes.ts
 import { Router } from "express"
 import { userController } from "../controllers/user.controller"
 import { businessController } from "../controllers/business.controller"
@@ -14,32 +15,55 @@ import {
   validateBusinessNumberFormat,
 } from "../validators/user.validators"
 
-const router = Router()
+export class UserRoutes {
+  public router: Router
 
-// 유저 CRUD 라우트 - 다양한 검증 방식 시연
-router.get("/", userController.getUsers)
-router.get("/:id", validateIdParam, userController.getUserById)
+  constructor() {
+    this.router = Router()
+    this.postRoutesInitialize()
+    this.getRoutesInitialize()
+    this.deleteRoutesInitialize()
+    this.putRoutesInitialize()
+  }
 
-// Express-validator 기반 검증
-router.post("/express-validator", validateLogin, userController.loginUser)
+  private postRoutesInitialize(): void {
+    // Express-validator 기반 검증
+    this.router.post("/express-validator", validateLogin, userController.loginUser)
 
-// Joi 스키마 기반 검증
-router.post("/joi", validateCreateUser, userController.createUser)
-router.put("/joi/:id", validateIdParam, validateUpdateUser, userController.updateUser)
+    // Joi 스키마 기반 검증
+    this.router.post("/joi", validateCreateUser, userController.createUser)
 
-// DTO 클래스 기반 검증
-router.post("/dto", validateCreateUserDTO, userController.createUser)
-router.put("/dto/:id", validateIdParam, validateUpdateUserDTO, userController.updateUser)
-router.post("/login", validateLoginDTO, userController.loginUser)
+    // DTO 클래스 기반 검증
+    this.router.post("/dto", validateCreateUserDTO, userController.createUser)
+    this.router.post("/login", validateLoginDTO, userController.loginUser)
 
-// 하이브리드 검증 (여러 방식 조합)
-router.post("/advanced", validateAdvancedUserRegistration, userController.createAdvancedUser)
-router.post("/business", validateBusinessRegistration, businessController.registerBusiness)
+    // 하이브리드 검증 (여러 방식 조합)
+    this.router.post("/advanced", validateAdvancedUserRegistration, userController.createAdvancedUser)
+    this.router.post("/business", validateBusinessRegistration, businessController.registerBusiness)
 
-// 비즈니스 관련 라우트
-router.post("/validate-business-number", validateBusinessNumberFormat, businessController.validateBusinessNumber)
+    // 비즈니스 관련 라우트
+    this.router.post(
+      "/validate-business-number",
+      validateBusinessNumberFormat,
+      businessController.validateBusinessNumber
+    )
+  }
 
-// 간단한 API 라우트는 기본적으로 Joi 스키마 기반 검증 사용
-router.delete("/:id", validateIdParam, userController.deleteUser)
+  private getRoutesInitialize(): void {
+    // 유저 CRUD 라우트 - 다양한 검증 방식 시연
+    this.router.get("/", userController.getUsers)
+    this.router.get("/:id", validateIdParam, userController.getUserById)
+  }
 
-export const userRoutes = router
+  private deleteRoutesInitialize(): void {
+    // 간단한 API 라우트는 기본적으로 Joi 스키마 기반 검증 사용
+    this.router.delete("/:id", validateIdParam, userController.deleteUser)
+  }
+
+  private putRoutesInitialize(): void {
+    // Joi 스키마 기반 검증
+    this.router.put("/joi/:id", validateIdParam, validateUpdateUser, userController.updateUser)
+    // DTO 클래스 기반 검증
+    this.router.put("/dto/:id", validateIdParam, validateUpdateUserDTO, userController.updateUser)
+  }
+}
