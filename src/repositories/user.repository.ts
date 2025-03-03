@@ -14,12 +14,8 @@ export class UserRepository {
    * 모든 사용자 조회
    */
   async findAll({}: {} = {}): Promise<User[]> {
-    const query = `
-      SELECT * FROM ${this.tableName}
-    `
+    const query = `SELECT * FROM ${this.tableName}`
     const users = await executeQuery<UserRow>({ sql: query })
-
-    // Date 객체로 변환 및 로그인 실패 횟수 매핑
     return users.map((user) => this.mapUserData(user))
   }
 
@@ -27,17 +23,10 @@ export class UserRepository {
    * ID로 단일 사용자 조회
    */
   async findById({ id }: { id: number }): Promise<User | null> {
-    const query = `
-      SELECT u.*, COUNT(l.id) as login_failures, l.lock_until
-      FROM ${this.tableName} u
-      LEFT JOIN user_login_attempts l ON u.id = l.user_id AND l.success = 0 AND l.create_date > DATE_SUB(NOW(), INTERVAL 24 HOUR)
-      WHERE u.id = ?
-      GROUP BY u.id
-    `
-    const user = await executeQuerySingle<UserRow>({ sql: query, params: [id] })
-
+    const query = `SELECT * FROM ${this.tableName} WHERE idx=?`
+    const params = [id]
+    const user = await executeQuerySingle<UserRow>({ sql: query, params })
     if (!user) return null
-
     return this.mapUserData(user)
   }
 

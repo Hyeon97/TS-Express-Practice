@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express"
-import { businessService } from "../../services/business.service"
+import { businessService } from "../services/business.service"
 import { logger } from "../../utils/logger"
 import { ApiUtils } from "../../utils/api.utils"
 import { BusinessResponseDto } from "../../dtos/user/business.dto"

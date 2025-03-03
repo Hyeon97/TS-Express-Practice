@@ -1,6 +1,7 @@
-import { IConfig, Environment, LogFormat } from "../types/common"
+import { LogFormat } from "../types/common"
+import { Environment, Config } from "./interface"
 
-class AppConfig implements IConfig {
+class AppConfig implements Config {
   readonly port: number
   readonly environment: Environment
   readonly apiPrefix: string

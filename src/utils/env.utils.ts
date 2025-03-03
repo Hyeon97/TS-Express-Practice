@@ -2,7 +2,6 @@ import path from "path"
 import fs from "fs"
 import dotenv from "dotenv"
 import dotenvExpand from "dotenv-expand"
-import { Environment } from "../types/common"
 
 /**
  * 환경 변수 및 실행 환경 관련 유틸리티
@@ -21,7 +20,7 @@ export class EnvUtils {
     if (this.isPackaged) {
       // 패키징된 환경: apiENV 파일 사용
       const envPath = path.join(this.execDir, "apiENV")
-      this.loadEnvFile(envPath)
+      this.loadEnvFile({ envPath })
     } else {
       // 개발 환경: NODE_ENV에 따른 .env 파일 사용
       this.loadEnvFromNodeEnv()
@@ -46,13 +45,13 @@ export class EnvUtils {
     const nodeEnv = process.env.NODE_ENV || "development"
     const envPath = path.resolve(process.cwd(), "env", `.env.${nodeEnv}`)
     console.log(`envPath: ${envPath}`)
-    this.loadEnvFile(envPath)
+    this.loadEnvFile({ envPath })
   }
 
   /**
    * 지정된 경로의 환경 변수 파일 로드
    */
-  private static loadEnvFile(envPath: string): void {
+  private static loadEnvFile({ envPath }: { envPath: string }): void {
     if (fs.existsSync(envPath)) {
       try {
         const envConfig = dotenv.config({ path: envPath })

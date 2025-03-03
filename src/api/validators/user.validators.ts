@@ -1,6 +1,6 @@
-import { body, param } from "express-validator"
+import { body, param, query } from "express-validator"
 import { validate, validateWithJoi, validateDTO, validateCustom } from "../../middleware/validationMiddleware"
-import { userService } from "../../services/user.service"
+import { userService } from "../services/user.service"
 import {
   createUserSchema,
   updateUserSchema,
@@ -13,10 +13,23 @@ import { CreateBusinessDto, ValidateBusinessNumberDto } from "../../dtos/user/bu
 // ------------------ Express-validator 체인 ------------------
 
 /**
- * ID 파라미터 검증 (express-validator 사용)
+ * ID 파라미터 검증
  */
 export const validateIdParam = validate([
   param("id").isInt({ min: 1 }).withMessage("유효한 ID 형식이 아닙니다").toInt(),
+])
+
+/**
+ * Eamil query 검증
+ */
+export const validateEmailQuery = validate([
+  query("email")
+    .exists()
+    .withMessage("이메일은 필수 값입니다.")
+    .isEmail()
+    .withMessage("유효한 이메일 형식이 아닙니다.")
+    .trim()
+    .normalizeEmail(),
 ])
 
 /**

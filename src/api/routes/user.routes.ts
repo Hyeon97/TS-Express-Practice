@@ -13,6 +13,7 @@ import {
   validateAdvancedUserRegistration,
   validateBusinessRegistration,
   validateBusinessNumberFormat,
+  validateEmailQuery,
 } from "../validators/user.validators"
 
 export class UserRoutes {
@@ -50,9 +51,12 @@ export class UserRoutes {
   }
 
   private getRoutesInitialize(): void {
-    // 유저 CRUD 라우트 - 다양한 검증 방식 시연
+    //  전체 목록 리턴
     this.router.get("/", userController.getUsers)
-    this.router.get("/:id", validateIdParam, userController.getUserById)
+    //  id로 조회
+    this.router.get("/id/:id", validateIdParam, userController.getUserById)
+    //  email로 조회
+    this.router.get("/email", validateEmailQuery, userController.getUserById)
   }
 
   private deleteRoutesInitialize(): void {

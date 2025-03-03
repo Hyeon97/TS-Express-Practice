@@ -59,7 +59,11 @@ export const errorHandler = (err: Error | ApiError, req: Request, res: Response,
     errorResponse.error.stack = err.stack || undefined
   }
 
-  res.status(statusCode).json(errorResponse)
+  //  stack은 로깅으로만 남김
+  const { success, error } = errorResponse
+  const { stack, ...errorWithoutStack } = error
+  logger.error(stack)
+  res.status(statusCode).json({ success, ...errorWithoutStack })
 }
 
 // 404 Not Found 핸들러
