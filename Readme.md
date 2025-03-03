@@ -13,7 +13,7 @@ npm install cors helmet
 npm install -D @types/cors
 
 # 검증
-npm install express-validator joi class-validator class-transformer axios
+npm install express-validator joi class-validator class-transformer reflect-metadata
 npm install @types/joi -D
 
 # 패키징
@@ -54,3 +54,4 @@ mysql -u root -p < D:\STUDY\TS-Express2\db\test.sql
 불필요한 세미콜론은 사용하지 않습니다
 코드의 내보내기 방식은 named export 방식만을 사용합니다
 함수 파라미터 입력방식은 객체 구조 분해 파라미터 방식만을 사용합니다
+"strict": true 옵션을 적용하여 코드를 작성합니다

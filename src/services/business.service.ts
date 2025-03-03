@@ -3,7 +3,7 @@ import { ApiError, UserError } from "../middleware/errorMiddleware"
 import { businessRepository } from "../repositories/business.repository"
 import { userService } from "./user.service"
 import { CryptoUtils } from "../utils/crypto.utils"
-// import axios from "axios"
+import axios from "axios"
 import { IndustryType } from "../dtos/user/business.dto"
 
 // 사업자 등록번호 검증 결과 타입

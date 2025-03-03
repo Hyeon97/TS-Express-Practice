@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import { Request, Response, NextFunction } from "express"
 import { validationResult, ValidationChain } from "express-validator"
 import Joi from "joi"

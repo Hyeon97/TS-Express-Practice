@@ -45,6 +45,7 @@ export class EnvUtils {
   private static loadEnvFromNodeEnv(): void {
     const nodeEnv = process.env.NODE_ENV || "development"
     const envPath = path.resolve(process.cwd(), "env", `.env.${nodeEnv}`)
+    console.log(`envPath: ${envPath}`)
     this.loadEnvFile(envPath)
   }
 

@@ -63,6 +63,11 @@ export class ApiError extends Error {
     return new ApiError(500, message, ErrorCode.INTERNAL_ERROR, details)
   }
 
+  // 서비스 이용 불가 오류
+  static serviceUnavailable(message: string, details?: any): ApiError {
+    return new ApiError(503, message, ErrorCode.SERVICE_UNAVAILABLE, details)
+  }
+
   // 비즈니스 도메인 에러 팩토리 메서드
   static validationError(message: string, details?: any): ApiError {
     return new ApiError(400, message, ErrorCode.VALIDATION_ERROR, details)
@@ -88,6 +93,7 @@ interface ErrorResponse {
     code: string
     message: string
     details?: any
+    stack?: string // stack 속성 추가
   }
   timestamp: string
 }
@@ -145,7 +151,7 @@ export const errorHandler = (err: Error | ApiError, req: Request, res: Response,
 
   // 개발 환경에서만 스택 트레이스 추가
   if (process.env.NODE_ENV !== "production") {
-    errorResponse.error["stack"] = err.stack
+    errorResponse.error.stack = err.stack || undefined
   }
 
   res.status(statusCode).json(errorResponse)
@@ -174,5 +180,34 @@ export class UserError extends ApiError {
 
   static passwordComplexityFailed(rules: string[]): ApiError {
     return ApiError.validationError("비밀번호가 복잡성 요구사항을 충족하지 않습니다", { rules })
+  }
+
+  static businessNumberInvalid(businessNumber: string): ApiError {
+    return ApiError.validationError(`유효하지 않은 사업자 등록번호입니다: ${businessNumber}`, { businessNumber })
+  }
+
+  static accountLocked(message: string, lockUntil: Date): ApiError {
+    return ApiError.forbidden(message, {
+      lockUntil: lockUntil.toISOString(),
+      remainingTime: Math.ceil((lockUntil.getTime() - Date.now()) / 1000 / 60) + "분",
+    })
+  }
+}
+
+// 비즈니스 도메인 관련 에러
+export class BusinessError extends ApiError {
+  static businessNumberInvalid(businessNumber: string): ApiError {
+    return ApiError.validationError(`유효하지 않은 사업자 등록번호입니다: ${businessNumber}`, { businessNumber })
+  }
+
+  static businessNumberExists(businessNumber: string): ApiError {
+    return ApiError.conflict(`이미 등록된 사업자 등록번호입니다: ${businessNumber}`, { businessNumber })
+  }
+
+  static invalidBusinessStatus(businessNumber: string, status: string): ApiError {
+    return ApiError.businessRuleViolation(`사업자 등록번호 ${businessNumber}의 상태가 유효하지 않습니다: ${status}`, {
+      businessNumber,
+      status,
+    })
   }
 }

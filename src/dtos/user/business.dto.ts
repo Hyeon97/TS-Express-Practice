@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import {
   IsNotEmpty,
   IsString,
@@ -76,6 +77,16 @@ export class CompanyDetailsDto {
 }
 
 /**
+ * 비즈니스 약관 동의 DTO (중첩용)
+ * BusinessAgreementsDto를 먼저 정의합니다.
+ */
+export class BusinessAgreementsDto extends AgreementsDto {
+  @IsNotEmpty({ message: "정보 이용 동의는 필수 항목입니다" })
+  @IsBoolean({ message: "정보 이용 동의 필드는 불리언 값이어야 합니다" })
+  dataProcessing: boolean = false
+}
+
+/**
  * 비즈니스 계정 등록 DTO
  */
 export class CreateBusinessDto {
@@ -128,15 +139,6 @@ export class CreateBusinessDto {
       dataProcessingConsent: this.agreements.dataProcessing,
     }
   }
-}
-
-/**
- * 비즈니스 약관 동의 DTO (중첩용)
- */
-export class BusinessAgreementsDto extends AgreementsDto {
-  @IsNotEmpty({ message: "정보 이용 동의는 필수 항목입니다" })
-  @IsBoolean({ message: "정보 이용 동의 필드는 불리언 값이어야 합니다" })
-  dataProcessing: boolean = false
 }
 
 /**
