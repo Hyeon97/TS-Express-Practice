@@ -161,7 +161,7 @@ export class BusinessResponseDto {
   industryType: string = ""
   employeeCount: number = 0
   foundingYear: number = 0
-  createdAt: string = ""
+  created: string = ""
 
   constructor(data: Partial<BusinessResponseDto> = {}) {
     this.id = data.id || 0
@@ -171,7 +171,7 @@ export class BusinessResponseDto {
     this.industryType = data.industryType || ""
     this.employeeCount = data.employeeCount || 0
     this.foundingYear = data.foundingYear || 0
-    this.createdAt = data.createdAt || ""
+    this.created = data.created || ""
   }
 
   /**
@@ -186,7 +186,7 @@ export class BusinessResponseDto {
       industryType: business.industry_type,
       employeeCount: business.employee_count,
       foundingYear: business.founding_year,
-      createdAt: business.created_at.toISOString(),
+      created: business.create_date.toISOString(),
     })
   }
 

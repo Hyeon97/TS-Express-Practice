@@ -2,10 +2,12 @@ import "reflect-metadata"
 import express, { Application } from "express"
 import cors from "cors"
 import helmet from "helmet"
-import { userRoutes } from "./src/api/routes/user.routes"
+import { UserRoutes } from "./src/api/routes/user.routes"
 import { config } from "./src/config/config"
-import { errorHandler, notFoundHandler } from "./src/middleware/errorMiddleware"
+// import { errorHandler, notFoundHandler } from "./src/middleware/errorMiddleware"
 import { logger, morganMiddleware } from "./src/utils/logger"
+import { errorHandler, notFoundHandler } from "./src/errors/error-handler"
+import { ServerRoutes } from "./src/api/routes/server.routes"
 
 class App {
   public app: Application
@@ -45,7 +47,8 @@ class App {
     })
 
     // API 라우트
-    this.app.use(`${config.apiPrefix}/users`, userRoutes)
+    this.app.use(`${config.apiPrefix}/users`, new UserRoutes().router)
+    this.app.use(`${config.apiPrefix}/servers`, new ServerRoutes().router)
     logger.info(`사용자 API 라우트가 ${config.apiPrefix}/users 경로에 등록되었습니다.`)
   }
 

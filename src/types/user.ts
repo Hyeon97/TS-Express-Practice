@@ -4,8 +4,8 @@ export interface User {
   name: string
   email: string
   password: string
-  created_at: Date
-  updated_at: Date
+  create_date: Date
+  last_login_date: Date
   // 추가된 속성
   loginFailures: number
   lockUntil?: Date
@@ -23,11 +23,14 @@ export interface UserProfile {
 }
 
 // 사용자 생성 시 필요한 데이터 타입
-export type CreateUserDTO = Omit<User, "id" | "created_at" | "updated_at" | "loginFailures" | "lockUntil" | "profile">
+export type CreateUserDTO = Omit<
+  User,
+  "id" | "create_date" | "last_login_date" | "loginFailures" | "lockUntil" | "profile"
+>
 
 // 사용자 업데이트 시 필요한 데이터 타입 (모든 필드 선택적)
 export type UpdateUserDTO = Partial<
-  Omit<User, "id" | "created_at" | "updated_at" | "loginFailures" | "lockUntil" | "profile">
+  Omit<User, "id" | "create_date" | "last_login_date" | "loginFailures" | "lockUntil" | "profile">
 >
 
 // 사용자 조회 결과 타입 (비밀번호 제외)

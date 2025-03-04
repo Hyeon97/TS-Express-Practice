@@ -2,11 +2,10 @@ import "reflect-metadata"
 import { Request, Response, NextFunction } from "express"
 import { validationResult, ValidationChain } from "express-validator"
 import Joi from "joi"
-import { ApiUtils } from "../utils/api.utils"
-import { logger } from "../utils/logger"
-import { ApiError, ErrorCode } from "./errorMiddleware"
 import { plainToInstance } from "class-transformer"
 import { validate as classValidate } from "class-validator"
+import { ApiError } from "../../errors/api-error"
+import { logger } from "../../utils/logger"
 
 /**
  * Express-validator 결과 처리 미들웨어
@@ -17,7 +16,7 @@ export const handleValidationErrors = (req: Request, res: Response, next: NextFu
   if (!errors.isEmpty()) {
     const errorMessages = errors.array().map((error) => error.msg)
     logger.warn(`[express-validator] 요청 유효성 검사 실패: ${errorMessages.join(", ")}`)
-    throw ApiError.validationError("요청 데이터 유효성 검사 실패", errorMessages)
+    throw ApiError.validationError({ message: "요청 데이터 유효성 검사 실패", details: errorMessages })
   }
 
   next()
@@ -48,7 +47,7 @@ export const validateWithJoi = (schema: Joi.ObjectSchema, options: { source?: "b
       if (error) {
         const errorMessages = error.details.map((detail) => detail.message)
         logger.warn(`[Joi] 요청 유효성 검사 실패: ${errorMessages.join(", ")}`)
-        throw ApiError.validationError("요청 데이터 유효성 검사 실패", errorMessages)
+        throw ApiError.validationError({ message: "요청 데이터 유효성 검사 실패", details: errorMessages })
       }
 
       // 유효성 검사를 통과한 데이터로 요청 객체 업데이트
@@ -92,7 +91,7 @@ export const validateDTO = <T extends object>(
         })
 
         logger.warn(`[class-validator] 요청 유효성 검사 실패: ${errorMessages.join(", ")}`)
-        throw ApiError.validationError("요청 데이터 유효성 검사 실패", errorMessages)
+        throw ApiError.validationError({ message: "요청 데이터 유효성 검사 실패", details: errorMessages })
       }
 
       // 유효성 검사를 통과한 DTO 인스턴스로 요청 객체 업데이트
@@ -103,7 +102,7 @@ export const validateDTO = <T extends object>(
         next(error)
       } else {
         logger.error("DTO 유효성 검사 중 오류 발생", error)
-        next(ApiError.internal("서버 내부 오류가 발생했습니다"))
+        next(ApiError.internal({ message: "서버 내부 오류가 발생했습니다" }))
       }
     }
   }
@@ -119,7 +118,7 @@ export const validateCustom = (validationFn: (req: Request) => string[] | Promis
 
       if (errors.length > 0) {
         logger.warn(`[Custom] 요청 유효성 검사 실패: ${errors.join(", ")}`)
-        throw ApiError.validationError("요청 데이터 유효성 검사 실패", errors)
+        throw ApiError.validationError({ message: "요청 데이터 유효성 검사 실패", details: errors })
       }
 
       next()

@@ -1,7 +1,6 @@
-import { executeQuery, executeQuerySingle, withTransaction } from "../db/connection"
-import { logger } from "../utils/logger"
 import { RowDataPacket, ResultSetHeader, PoolConnection } from "mysql2/promise"
-import { IndustryType } from "../dtos/user/business.dto"
+import { executeQuery, executeQuerySingle, withTransaction } from "../../db/connection"
+import { IndustryType } from "../../dtos/user/business.dto"
 
 // MySQL RowDataPacket과 Business 인터페이스를 결합한 타입
 type BusinessRow = {
@@ -20,8 +19,8 @@ type BusinessRow = {
   status: string
   marketing_consent: number
   data_processing_consent: number
-  created_at: Date
-  updated_at: Date
+  create_date: Date
+  last_login_date: Date
 } & RowDataPacket
 
 export class BusinessRepository {
@@ -132,25 +131,12 @@ export class BusinessRepository {
             status,
             marketing_consent,
             data_processing_consent,
-            created_at, 
-            updated_at
+            create_date, 
+            last_login_date
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `
 
-        const businessParams = [
-          data.companyName,
-          data.businessNumber,
-          data.email,
-          data.password,
-          data.industryType,
-          data.employeeCount,
-          data.foundingYear,
-          data.status,
-          data.marketingConsent ? 1 : 0,
-          data.dataProcessingConsent ? 1 : 0,
-          now,
-          now,
-        ]
+        const businessParams = [data.companyName, data.businessNumber, data.email, data.password, data.industryType, data.employeeCount, data.foundingYear, data.status, data.marketingConsent ? 1 : 0, data.dataProcessingConsent ? 1 : 0, now, now]
 
         const [businessResult] = await connection.execute<ResultSetHeader>(businessQuery, businessParams)
         const businessId = businessResult.insertId
@@ -163,20 +149,12 @@ export class BusinessRepository {
             city,
             state,
             zip_code,
-            created_at,
-            updated_at
+            create_date,
+            last_login_date
           ) VALUES (?, ?, ?, ?, ?, ?, ?)
         `
 
-        const addressParams = [
-          businessId,
-          data.address.street,
-          data.address.city,
-          data.address.state,
-          data.address.zipCode,
-          now,
-          now,
-        ]
+        const addressParams = [businessId, data.address.street, data.address.city, data.address.state, data.address.zipCode, now, now]
 
         await connection.execute<ResultSetHeader>(addressQuery, addressParams)
 
@@ -231,7 +209,7 @@ export class BusinessRepository {
 
         // 기업 계정 정보 업데이트
         if (Object.keys(businessFields).length > 0) {
-          businessFields.updated_at = now
+          businessFields.last_login_date = now
 
           const setClause = Object.keys(businessFields)
             .map((key) => `${key} = ?`)
@@ -250,7 +228,7 @@ export class BusinessRepository {
 
         // 주소 정보 업데이트
         if (Object.keys(addressFields).length > 0) {
-          addressFields.updated_at = now
+          addressFields.last_login_date = now
 
           const setClause = Object.keys(addressFields)
             .map((key) => `${key} = ?`)
@@ -293,8 +271,8 @@ export class BusinessRepository {
   private mapDateFields(business: BusinessRow) {
     return {
       ...business,
-      created_at: new Date(business.created_at),
-      updated_at: new Date(business.updated_at),
+      create_date: new Date(business.create_date),
+      last_login_date: new Date(business.last_login_date),
       // boolean 값으로 변환
       marketing_consent: !!business.marketing_consent,
       data_processing_consent: !!business.data_processing_consent,

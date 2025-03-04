@@ -1,38 +1,27 @@
-import { body, param } from "express-validator"
-import { validate, validateWithJoi, validateDTO, validateCustom } from "../../middleware/validationMiddleware"
-import { userService } from "../../services/user.service"
-import {
-  createUserSchema,
-  updateUserSchema,
-  loginSchema,
-  validateBusinessNumberSchema,
-} from "../../joi-schemas/user.schema"
+import { body, param, query } from "express-validator"
+import { createUserSchema, updateUserSchema, loginSchema, validateBusinessNumberSchema } from "../../joi-schemas/user.schema"
 import { CreateUserDto, UpdateUserDto, LoginUserDto, CreateAdvancedUserDto } from "../../dtos/user/user.dto"
 import { CreateBusinessDto, ValidateBusinessNumberDto } from "../../dtos/user/business.dto"
+import { userService } from "../services/user/user.service"
+import { validate, validateCustom, validateDTO, validateWithJoi } from "../middleware/validationMiddleware"
 
 // ------------------ Express-validator 체인 ------------------
 
 /**
- * ID 파라미터 검증 (express-validator 사용)
+ * ID 파라미터 검증
  */
-export const validateIdParam = validate([
-  param("id").isInt({ min: 1 }).withMessage("유효한 ID 형식이 아닙니다").toInt(),
-])
+export const validateIdParam = validate([param("id").isInt({ min: 1 }).withMessage("유효한 ID 형식이 아닙니다").toInt()])
+
+/**
+ * Eamil query 검증
+ */
+export const validateEmailQuery = validate([query("email").exists().withMessage("이메일은 필수 값입니다.").isEmail().withMessage("유효한 이메일 형식이 아닙니다.").trim().normalizeEmail()])
 
 /**
  * 간단한 로그인 검증 (express-validator 사용)
  * - 간단한 폼 데이터 검증에 적합
  */
-export const validateLogin = validate([
-  body("email")
-    .notEmpty()
-    .withMessage("이메일은 필수 항목입니다")
-    .isEmail()
-    .withMessage("유효한 이메일 주소를 입력하세요")
-    .normalizeEmail(),
-
-  body("password").notEmpty().withMessage("비밀번호는 필수 항목입니다"),
-])
+export const validateLogin = validate([body("email").notEmpty().withMessage("이메일은 필수 항목입니다").isEmail().withMessage("유효한 이메일 주소를 입력하세요").normalizeEmail(), body("password").notEmpty().withMessage("비밀번호는 필수 항목입니다")])
 
 // ------------------ Joi 스키마 기반 검증 ------------------
 

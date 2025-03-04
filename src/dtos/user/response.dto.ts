@@ -8,15 +8,15 @@ export class UserResponseDTO {
   id: number
   name: string
   email: string
-  createdAt: string
-  updatedAt: string
+  created: string
+  lastLogin: string
 
   constructor(data: Partial<UserResponseDTO> = {}) {
     this.id = data.id || 0
     this.name = data.name || ""
     this.email = data.email || ""
-    this.createdAt = data.createdAt || ""
-    this.updatedAt = data.updatedAt || ""
+    this.created = data.created || ""
+    this.lastLogin = data.lastLogin || ""
   }
 
   /**
@@ -27,8 +27,8 @@ export class UserResponseDTO {
       id: user.id,
       name: user.name,
       email: user.email,
-      createdAt: user.created_at.toISOString(),
-      updatedAt: user.updated_at.toISOString(),
+      created: user.create_date.toISOString(),
+      lastLogin: user.last_login_date.toISOString(),
     })
   }
 

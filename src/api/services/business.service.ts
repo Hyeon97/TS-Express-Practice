@@ -1,10 +1,11 @@
-import { logger } from "../utils/logger"
-import { ApiError, UserError } from "../middleware/errorMiddleware"
-import { businessRepository } from "../repositories/business.repository"
-import { userService } from "./user.service"
-import { CryptoUtils } from "../utils/crypto.utils"
+import { logger } from "../../utils/logger"
+import { CryptoUtils } from "../../utils/crypto.utils"
 import axios from "axios"
-import { IndustryType } from "../dtos/user/business.dto"
+import { IndustryType } from "../../dtos/user/business.dto"
+import { ApiError } from "../../errors/api-error"
+import { UserError } from "../../errors/domain-errors/user-error"
+import { userService } from "./user/user.service"
+import { businessRepository } from "../repositories/business.repository"
 
 // 사업자 등록번호 검증 결과 타입
 interface BusinessNumberValidationResult {
@@ -65,7 +66,7 @@ export class BusinessService {
       }
     } catch (error) {
       logger.error(`사업자 등록번호 검증 중 오류 발생: ${error}`)
-      throw ApiError.internal("사업자 등록번호 검증 중 오류가 발생했습니다")
+      throw ApiError.internal({ message: "사업자 등록번호 검증 중 오류가 발생했습니다" })
     }
   }
 
@@ -127,7 +128,7 @@ export class BusinessService {
       if (error instanceof ApiError) throw error
 
       logger.error(`기업 계정 생성 중 오류 발생: ${error}`)
-      throw ApiError.internal("기업 계정 생성 중 오류가 발생했습니다")
+      throw ApiError.internal({ message: "기업 계정 생성 중 오류가 발생했습니다" })
     }
   }
 
@@ -139,7 +140,7 @@ export class BusinessService {
       return await businessRepository.findAll()
     } catch (error) {
       logger.error("기업 계정 목록 조회 중 오류 발생", error)
-      throw ApiError.databaseError("기업 계정 목록을 조회하는 중 오류가 발생했습니다")
+      throw ApiError.databaseError({ message: "기업 계정 목록을 조회하는 중 오류가 발생했습니다" })
     }
   }
 
@@ -151,7 +152,7 @@ export class BusinessService {
       const business = await businessRepository.findById(id)
 
       if (!business) {
-        throw ApiError.notFound(`ID가 ${id}인 기업 계정을 찾을 수 없습니다`)
+        throw ApiError.notFound({ message: `ID가 ${id}인 기업 계정을 찾을 수 없습니다` })
       }
 
       return business
@@ -159,38 +160,38 @@ export class BusinessService {
       if (error instanceof ApiError) throw error
 
       logger.error(`ID ${id} 기업 계정 조회 중 오류 발생`, error)
-      throw ApiError.databaseError("기업 계정 정보를 조회하는 중 오류가 발생했습니다")
+      throw ApiError.databaseError({ message: "기업 계정 정보를 조회하는 중 오류가 발생했습니다" })
     }
   }
 
   /**
    * 기업 계정 업데이트
    */
-  async updateBusinessAccount(id: number, updateData: any) {
+  async updateBusinessAccount(id: number, lastLogina: any) {
     try {
       // 1. 기존 기업 계정 확인
       const existingBusiness = await businessRepository.findById(id)
 
       if (!existingBusiness) {
-        throw ApiError.notFound(`ID가 ${id}인 기업 계정을 찾을 수 없습니다`)
+        throw ApiError.notFound({ message: `ID가 ${id}인 기업 계정을 찾을 수 없습니다` })
       }
 
       // 2. 이메일 변경 시 중복 확인
-      if (updateData.email && updateData.email !== existingBusiness.email) {
-        const emailExists = await userService.getUserByEmail({ email: updateData.email })
+      if (lastLogina.email && lastLogina.email !== existingBusiness.email) {
+        const emailExists = await userService.getUserByEmail({ email: lastLogina.email })
 
         if (emailExists) {
-          throw UserError.emailAlreadyExists(updateData.email)
+          throw UserError.emailAlreadyExists(lastLogina.email)
         }
       }
 
       // 3. 비밀번호 변경 시 해시화
-      if (updateData.password) {
-        updateData.password = CryptoUtils.hashPassword({ password: updateData.password })
+      if (lastLogina.password) {
+        lastLogina.password = CryptoUtils.hashPassword({ password: lastLogina.password })
       }
 
       // 4. 기업 계정 업데이트
-      const updatedBusiness = await businessRepository.update(id, updateData)
+      const updatedBusiness = await businessRepository.update(id, lastLogina)
 
       logger.info(`기업 계정 ID: ${id} 정보가 업데이트되었습니다`)
 
@@ -199,7 +200,7 @@ export class BusinessService {
       if (error instanceof ApiError) throw error
 
       logger.error(`ID ${id} 기업 계정 업데이트 중 오류 발생`, error)
-      throw ApiError.databaseError("기업 계정 정보를 업데이트하는 중 오류가 발생했습니다")
+      throw ApiError.databaseError({ message: "기업 계정 정보를 업데이트하는 중 오류가 발생했습니다" })
     }
   }
 
@@ -212,7 +213,7 @@ export class BusinessService {
       const existingBusiness = await businessRepository.findById(id)
 
       if (!existingBusiness) {
-        throw ApiError.notFound(`ID가 ${id}인 기업 계정을 찾을 수 없습니다`)
+        throw ApiError.notFound({ message: `ID가 ${id}인 기업 계정을 찾을 수 없습니다` })
       }
 
       // 2. 기업 계정 비활성화
@@ -225,7 +226,7 @@ export class BusinessService {
       if (error instanceof ApiError) throw error
 
       logger.error(`ID ${id} 기업 계정 비활성화 중 오류 발생`, error)
-      throw ApiError.databaseError("기업 계정을 비활성화하는 중 오류가 발생했습니다")
+      throw ApiError.databaseError({ message: "기업 계정을 비활성화하는 중 오류가 발생했습니다" })
     }
   }
 
@@ -295,7 +296,7 @@ export class BusinessService {
       }
     } catch (error) {
       logger.error(`국세청 API 호출 중 오류 발생: ${error}`)
-      throw ApiError.serviceUnavailable("사업자 등록번호 확인 서비스에 일시적인 오류가 발생했습니다")
+      throw ApiError.serviceUnavailable({ message: "사업자 등록번호 확인 서비스에 일시적인 오류가 발생했습니다" })
     }
   }
 }

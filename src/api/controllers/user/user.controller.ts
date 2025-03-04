@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from "express"
-import { userService } from "../../services/user.service"
-import { Controller } from "../../types/common"
-import { logger } from "../../utils/logger"
-import { ApiError, UserError } from "../../middleware/errorMiddleware"
-import { ApiUtils } from "../../utils/api.utils"
-import { UserResponseDto } from "../../dtos/user/user.dto"
+import { logger } from "../../../utils/logger"
+import { ApiUtils } from "../../../utils/api.utils"
+import { UserResponseDto } from "../../../dtos/user/user.dto"
+import { IUserController } from "./interface"
+import { userService } from "../../services/user/user.service"
 
-export class UserController implements Controller {
+export class UserController implements IUserController {
   /**
    * 모든 사용자 조회
    */
@@ -19,11 +18,10 @@ export class UserController implements Controller {
 
       // 응답 DTO로 변환
       const userDTOs = UserResponseDto.fromEntities(users)
-
       logger.info(`총 ${users.length}명의 사용자 정보를 조회했습니다.`)
 
       // 응답 생성
-      ApiUtils.success(res, userDTOs)
+      ApiUtils.success({ res, data: userDTOs })
     } catch (error) {
       next(error)
     }
@@ -48,7 +46,7 @@ export class UserController implements Controller {
       logger.info(`ID: ${id} 사용자 정보를 성공적으로 조회했습니다.`)
 
       // 응답 생성
-      ApiUtils.success(res, userDTO)
+      ApiUtils.success({ res, data: userDTO })
     } catch (error) {
       next(error)
     }
@@ -74,7 +72,7 @@ export class UserController implements Controller {
       logger.info(`새 사용자가 생성되었습니다. ID: ${newUser.id}, 이름: ${newUser.name}`)
 
       // 응답 생성
-      ApiUtils.success(res, userDTO, 201, "사용자가 성공적으로 생성되었습니다")
+      ApiUtils.success({ res, data: userDTO, statusCode: 201, message: "사용자가 성공적으로 생성되었습니다" })
     } catch (error) {
       next(error)
     }
@@ -99,7 +97,7 @@ export class UserController implements Controller {
       logger.info(`새 고급 사용자가 생성되었습니다. ID: ${newUser.id}, 이름: ${newUser.name}`)
 
       // 응답 생성
-      ApiUtils.success(res, userDTO, 201, "고급 사용자가 성공적으로 생성되었습니다")
+      ApiUtils.success({ res, data: userDTO, statusCode: 201, message: "고급 사용자가 성공적으로 생성되었습니다" })
     } catch (error) {
       next(error)
     }
@@ -130,7 +128,7 @@ export class UserController implements Controller {
       logger.info(`ID: ${id} 사용자 정보가 성공적으로 업데이트되었습니다.`)
 
       // 응답 생성
-      ApiUtils.success(res, userDTO, 200, "사용자 정보가 성공적으로 업데이트되었습니다")
+      ApiUtils.success({ res, data: userDTO, statusCode: 200, message: "사용자 정보가 성공적으로 업데이트되었습니다" })
     } catch (error) {
       next(error)
     }
@@ -152,7 +150,7 @@ export class UserController implements Controller {
       logger.info(`ID: ${id} 사용자가 성공적으로 삭제되었습니다.`)
 
       // 응답 생성
-      ApiUtils.success(res, null, 200, "사용자가 성공적으로 삭제되었습니다")
+      ApiUtils.success({ res, data: null, statusCode: 200, message: "사용자가 성공적으로 삭제되었습니다" })
     } catch (error) {
       next(error)
     }
@@ -179,7 +177,7 @@ export class UserController implements Controller {
       logger.info(`ID: ${user.id}, 이메일: ${user.email} 사용자 로그인 성공`)
 
       // 응답 생성
-      ApiUtils.success(res, userDTO, 200, "로그인에 성공했습니다")
+      ApiUtils.success({ res, data: userDTO, statusCode: 200, message: "로그인에 성공했습니다" })
     } catch (error) {
       next(error)
     }
