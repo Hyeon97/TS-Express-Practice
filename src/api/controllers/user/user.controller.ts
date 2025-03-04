@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express"
-import { userService } from "../services/user.service"
-import { Controller } from "../../types/common"
-import { logger } from "../../utils/logger"
-import { ApiUtils } from "../../utils/api.utils"
-import { UserResponseDto } from "../../dtos/user/user.dto"
+import { logger } from "../../../utils/logger"
+import { ApiUtils } from "../../../utils/api.utils"
+import { UserResponseDto } from "../../../dtos/user/user.dto"
+import { IUserController } from "./interface"
+import { userService } from "../../services/user/user.service"
 
-export class UserController implements Controller {
+export class UserController implements IUserController {
   /**
    * 모든 사용자 조회
    */

@@ -1,6 +1,6 @@
 // src/routes/user.routes.ts
 import { Router } from "express"
-import { userController } from "../controllers/user.controller"
+import { userController } from "../controllers/user/user.controller"
 import { businessController } from "../controllers/business.controller"
 import {
   validateIdParam,

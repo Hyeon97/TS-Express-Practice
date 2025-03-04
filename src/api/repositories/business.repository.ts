@@ -1,7 +1,6 @@
-import { executeQuery, executeQuerySingle, withTransaction } from "../db/connection"
-import { logger } from "../utils/logger"
 import { RowDataPacket, ResultSetHeader, PoolConnection } from "mysql2/promise"
-import { IndustryType } from "../dtos/user/business.dto"
+import { executeQuery, executeQuerySingle, withTransaction } from "../../db/connection"
+import { IndustryType } from "../../dtos/user/business.dto"
 
 // MySQL RowDataPacket과 Business 인터페이스를 결합한 타입
 type BusinessRow = {
@@ -137,20 +136,7 @@ export class BusinessRepository {
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `
 
-        const businessParams = [
-          data.companyName,
-          data.businessNumber,
-          data.email,
-          data.password,
-          data.industryType,
-          data.employeeCount,
-          data.foundingYear,
-          data.status,
-          data.marketingConsent ? 1 : 0,
-          data.dataProcessingConsent ? 1 : 0,
-          now,
-          now,
-        ]
+        const businessParams = [data.companyName, data.businessNumber, data.email, data.password, data.industryType, data.employeeCount, data.foundingYear, data.status, data.marketingConsent ? 1 : 0, data.dataProcessingConsent ? 1 : 0, now, now]
 
         const [businessResult] = await connection.execute<ResultSetHeader>(businessQuery, businessParams)
         const businessId = businessResult.insertId
@@ -168,15 +154,7 @@ export class BusinessRepository {
           ) VALUES (?, ?, ?, ?, ?, ?, ?)
         `
 
-        const addressParams = [
-          businessId,
-          data.address.street,
-          data.address.city,
-          data.address.state,
-          data.address.zipCode,
-          now,
-          now,
-        ]
+        const addressParams = [businessId, data.address.street, data.address.city, data.address.state, data.address.zipCode, now, now]
 
         await connection.execute<ResultSetHeader>(addressQuery, addressParams)
 

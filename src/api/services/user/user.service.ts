@@ -1,10 +1,9 @@
-import { userRepository } from "../../repositories/user.repository"
-import { User, CreateUserDTO, UpdateUserDTO } from "../../types/user"
-import { logger } from "../../utils/logger"
-// import { ApiError, UserError } from "../middleware/errorMiddleware"
-import { CryptoUtils } from "../../utils/crypto.utils"
-import { ApiError } from "../../errors/api-error"
-import { UserError } from "../../errors/domain-errors/user-error"
+import { ApiError } from "../../../errors/api-error"
+import { UserError } from "../../../errors/domain-errors/user-error"
+import { User, CreateUserDTO, UpdateUserDTO } from "../../../types/user"
+import { CryptoUtils } from "../../../utils/crypto.utils"
+import { logger } from "../../../utils/logger"
+import { userRepository } from "../../repositories/user/user.repository"
 
 export class UserService {
   /**

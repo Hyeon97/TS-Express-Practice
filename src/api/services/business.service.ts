@@ -1,11 +1,11 @@
 import { logger } from "../../utils/logger"
-import { businessRepository } from "../../repositories/business.repository"
-import { userService } from "./user.service"
 import { CryptoUtils } from "../../utils/crypto.utils"
 import axios from "axios"
 import { IndustryType } from "../../dtos/user/business.dto"
 import { ApiError } from "../../errors/api-error"
 import { UserError } from "../../errors/domain-errors/user-error"
+import { userService } from "./user/user.service"
+import { businessRepository } from "../repositories/business.repository"
 
 // 사업자 등록번호 검증 결과 타입
 interface BusinessNumberValidationResult {

@@ -1,7 +1,7 @@
-import { executeQuery, executeQuerySingle, withTransaction } from "../db/connection"
-import { User, CreateUserDTO, UpdateUserDTO, CreateAdvancedUserDTO } from "../types/user"
-import { logger } from "../utils/logger"
 import { RowDataPacket, ResultSetHeader, PoolConnection } from "mysql2/promise"
+import { executeQuery, executeQuerySingle, withTransaction } from "../../../db/connection"
+import { User, CreateUserDTO, CreateAdvancedUserDTO, UpdateUserDTO } from "../../../types/user"
+import { logger } from "../../../utils/logger"
 
 // MySQL RowDataPacket과 User 인터페이스를 결합한 타입
 type UserRow = User & RowDataPacket
@@ -27,6 +27,18 @@ export class UserRepository {
     const params = [id]
     const user = await executeQuerySingle<UserRow>({ sql: query, params })
     if (!user) return null
+    return this.mapUserData(user)
+  }
+
+  /**
+   * email, password로 사용자 조회
+   */
+  async findByEmailAndPassword({ email, password }: { email: string; password: string }) {
+    const query = `SELECT * FROM ${this.tableName} WHERE email=? and password=?`
+    const params = [email, password]
+    const user = await executeQuerySingle<UserRow>({ sql: query, params })
+    if (!user) return null
+
     return this.mapUserData(user)
   }
 
