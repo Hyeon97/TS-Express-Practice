@@ -63,7 +63,7 @@ export const errorHandler = (err: Error | ApiError, req: Request, res: Response,
   const { success, error } = errorResponse
   const { stack, ...errorWithoutStack } = error
   logger.error(stack)
-  res.status(statusCode).json({ success, ...errorWithoutStack })
+  res.status(statusCode).json({ success, error: { ...errorWithoutStack } })
 }
 
 // 404 Not Found 핸들러

@@ -15,3 +15,9 @@
 
 # log 
 /logs
+
+# test
+/coverage
+
+# 기타 백업
+*.zip

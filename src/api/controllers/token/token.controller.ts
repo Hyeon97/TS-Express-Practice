@@ -7,16 +7,16 @@ export class TokenController implements ITokenController {
   /**
    * 토큰 발급
    */
-  createToken(req: Request, res: Response, next: NextFunction): Promise<void> {
+  createToken(req: Request, res: Response, next: NextFunction): any {
     try {
       logger.debug("토큰 발급 요청")
 
-      const token = await tokenService.createToke()
-      const tokenDTO = TokenResponseDTO
+      // const token = await tokenService.createToke()
+      // const tokenDTO = TokenResponseDTO
 
-      logger.info(`토큰 생성됨`)
+      // logger.info(`토큰 생성됨`)
 
-      ApiUtils.success({ res, data: tokenDTO })
+      // ApiUtils.success({ res, data: tokenDTO })
     } catch (error) {
       next(error)
     }

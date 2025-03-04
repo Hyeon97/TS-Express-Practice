@@ -19,6 +19,9 @@ npm install @types/joi -D
 # 패키징
 npm install -D pkg
 
+# 테스트
+npm install -D jest ts-jest @types/jest supertest @types/supertest
+
 # 로깅
 npm install winston morgan winston-daily-rotate-file
 npm install -D @types/morgan
@@ -63,3 +66,5 @@ mysql -u root -p < D:\STUDY\TS-Express2\db\test.sql
 코드의 내보내기 방식은 named export 방식만을 사용합니다
 함수 파라미터 입력방식은 객체 구조 분해 파라미터 방식만을 사용합니다
 "strict": true 옵션을 적용하여 코드를 작성합니다
+
+# 모킹
