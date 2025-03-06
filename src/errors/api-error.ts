@@ -108,6 +108,15 @@ export class ApiError extends Error {
     })
   }
 
+  static serverError(options: ErrorIOptions): ApiError {
+    return new ApiError({
+      statusCode: 500,
+      message: options.message,
+      errorCode: ErrorCode.INTERNAL_ERROR,
+      details: options.details,
+    })
+  }
+
   static databaseError(options: ErrorIOptions): ApiError {
     return new ApiError({
       statusCode: 500,
