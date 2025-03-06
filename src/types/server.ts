@@ -1,3 +1,8 @@
+import { VALID_OS_VALUES, VALID_STATE_VALUES, VALID_LICENSE_VALUES } from "./common"
+
+//  server 연결 상태 정의
+export type StateType = "connect" | "disconnect"
+
 //  시스템 모드 정의
 enum SystemMode {
   SOURCE = 1,
@@ -13,6 +18,7 @@ enum DiskType {
 }
 
 //  OS 타입
+export type OsType = "win" | "lin"
 enum OSType {
   WINDOW = 1,
   LINUX = 2,
@@ -60,8 +66,16 @@ export const ServerRepositoryTypeLables: Record<ServerRepositoryType, string> = 
   [ServerRepositoryType.UNKNOWN]: "Unknwon",
 }
 
-//  server basic default return type
-export type ServerBasicDefaultReturn = Pick<ServerBasic, "sSystemName" | "nSystemMode" | "nOS" | "sOSVersion" | "sIPAddress" | "sStatus" | "nLicenseID">
+//  server data 필터링 옵션
+export interface ServerFilterOptions {
+  os?: (typeof VALID_OS_VALUES)[number] | ""
+  network?: boolean
+  disk?: boolean
+  partition?: boolean
+  repository?: boolean
+  state?: (typeof VALID_STATE_VALUES)[number] | ""
+  license?: (typeof VALID_LICENSE_VALUES)[number] | ""
+}
 
 //  server_basic table 데이터 구조 정의
 export interface ServerBasic {
@@ -94,8 +108,14 @@ export interface ServerBasic {
   nLicenseID: number
 }
 
-//  서버 조회 결과 타입
-export type serverBasicResponse = Pick<ServerBasic, "sSystemName" | "nSystemMode">
+//  서버 조회 결과 리턴 타입
+export interface serverDBResponse {
+  server: ServerBasic
+  disk?: ServerDisk[]
+  partition?: ServerPartition[]
+  network?: ServerNetwork[]
+  repository?: ServerRepository[]
+}
 
 //  server_disk table 데이터 구조 정의
 export interface ServerDisk {
@@ -114,6 +134,7 @@ export interface ServerDisk {
   sLastUpdateTime: string
   nFlags: number
 }
+
 //  server_network table 데이터 구조 정의
 export interface ServerNetwork {
   nID: number
@@ -129,6 +150,7 @@ export interface ServerNetwork {
   sLastUpdateTime: string
   nFlags: number
 }
+
 //  server_partition table 데이터 구조 정의
 export interface ServerPartition {
   nID: number
@@ -149,6 +171,7 @@ export interface ServerPartition {
   sLastUpdateTime: string
   nFlags: number
 }
+
 //  server_repository table 데이터 구조 정의
 export interface ServerRepository {
   nID: number
