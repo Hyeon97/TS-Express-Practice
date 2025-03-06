@@ -19,10 +19,8 @@ export class ServerRoutes {
   private getRoutesInitialize(): void {
     //  전체 목록 리턴
     this.router.get("/", validatFilterOptionQuery, serverController.getServers)
-    // ID로 단일 서버 조회 (필터 옵션 포함)
-    this.router.get("/id/:id", serverController.getServerById)
-    // 서버 이름으로 조회 (필터 옵션 포함)
-    this.router.get("/name/:name", serverController.getServerByName)
+    // 서버 이름으로 조회
+    this.router.get("/name/:name", validatFilterOptionQuery, serverController.getServerByName)
   }
 
   private deleteRoutesInitialize(): void {}
