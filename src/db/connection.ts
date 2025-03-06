@@ -1,6 +1,7 @@
 import mysql from "mysql2/promise"
 import { config } from "../config/config"
 import { logger } from "../utils/logger"
+import { log } from "console"
 
 // 환경 변수에서 데이터베이스 설정 가져오기
 const dbConfig = {
@@ -32,6 +33,7 @@ export const testConnection = async (): Promise<boolean> => {
 // 쿼리 실행 헬퍼 함수
 export const executeQuery = async <T>({ sql, params = [] }: { sql: string; params?: any[] }): Promise<T[]> => {
   try {
+    logger.debug(`실행 쿼리문: ${pool.format(sql, params)}`)
     const [rows] = await pool.execute(sql, params)
     return rows as T[]
   } catch (error: any) {
@@ -42,23 +44,13 @@ export const executeQuery = async <T>({ sql, params = [] }: { sql: string; param
 }
 
 // 단일 결과 쿼리 실행 헬퍼 함수
-export const executeQuerySingle = async <T>({
-  sql,
-  params = [],
-}: {
-  sql: string
-  params?: any[]
-}): Promise<T | null> => {
+export const executeQuerySingle = async <T>({ sql, params = [] }: { sql: string; params?: any[] }): Promise<T | null> => {
   const results = await executeQuery<T>({ sql, params })
   return results.length > 0 ? results[0] : null
 }
 
 // 트랜잭션 헬퍼 함수
-export const withTransaction = async <T>({
-  callback,
-}: {
-  callback: (connection: mysql.PoolConnection) => Promise<T>
-}): Promise<T> => {
+export const withTransaction = async <T>({ callback }: { callback: (connection: mysql.PoolConnection) => Promise<T> }): Promise<T> => {
   const connection = await pool.getConnection()
 
   try {
