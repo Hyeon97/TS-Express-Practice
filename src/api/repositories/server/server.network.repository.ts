@@ -1,6 +1,6 @@
 import { executeQuery } from "../../../db/connection"
 import { ApiError } from "../../../errors/api-error"
-import { ServerNetwork } from "../../../types/server"
+import { ServerNetwork } from "../../../types/server/server.db"
 import { logger } from "../../../utils/logger"
 
 export class ServerNetworkRepository {

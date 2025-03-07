@@ -8,9 +8,9 @@ export interface User {
   last_login_date: Date
   // 추가된 속성
   loginFailures: number
-  lockUntil?: Date
+  lockUntil?:  
   // 프로필 관련 속성
-  profile?: UserProfile
+  profile?: UserProfile: any
 }
 
 // 사용자 프로필 정보 타입

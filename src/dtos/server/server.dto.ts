@@ -1,4 +1,4 @@
-import { OSTypeLables, ServerBasic, serverDBResponse, SystemModeLabels } from "../../types/server"
+import { serverDBResponse, SystemModeLabels, OSTypeLables } from "../../types/server/server"
 import { formatDiskSize } from "../../utils/data-convert.util"
 import { DiskInfoDTO } from "./server.disk.dto"
 import { NetworkInfoDTO } from "./server.network.dto"

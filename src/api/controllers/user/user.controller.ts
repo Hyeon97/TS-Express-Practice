@@ -2,10 +2,9 @@ import { Request, Response, NextFunction } from "express"
 import { logger } from "../../../utils/logger"
 import { ApiUtils } from "../../../utils/api.utils"
 import { UserResponseDto } from "../../../dtos/user/user.dto"
-import { IUserController } from "./interface"
 import { userService } from "../../services/user/user.service"
 
-export class UserController implements IUserController {
+export class UserController {
   /**
    * 모든 사용자 조회
    */

@@ -1,4 +1,4 @@
-import { ServerNetwork } from "../../types/server"
+import { ServerNetwork } from "../../types/server/server.db"
 
 // 네트워크 정보 DTO
 export class NetworkInfoDTO {

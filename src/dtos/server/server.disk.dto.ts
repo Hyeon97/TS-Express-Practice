@@ -1,4 +1,5 @@
-import { DiskTypeLabels, ServerDisk } from "../../types/server"
+import { DiskTypeLabels } from "../../types/server/server"
+import { ServerDisk } from "../../types/server/server.db"
 import { formatDiskSize } from "../../utils/data-convert.util"
 
 // 디스크 정보 DTO

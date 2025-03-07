@@ -1,4 +1,4 @@
-import { ServerPartition } from "../../types/server"
+import { ServerPartition } from "../../types/server/server.db"
 import { formatDiskSize } from "../../utils/data-convert.util"
 
 //  partition 정보 DTO

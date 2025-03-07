@@ -1,6 +1,7 @@
 import { executeQuery } from "../../../db/connection"
 import { ApiError } from "../../../errors/api-error"
-import { ServerDisk } from "../../../types/server"
+import { ServerDisk } from "../../../types/server/server.db"
+
 import { logger } from "../../../utils/logger"
 
 export class ServerDiskRepository {

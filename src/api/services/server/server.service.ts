@@ -1,13 +1,7 @@
 import { ApiError } from "../../../errors/api-error"
-import {
-  ServerBasic,
-  serverDBResponse,
-  ServerDisk,
-  ServerFilterOptions,
-  ServerNetwork,
-  ServerPartition,
-  ServerRepository,
-} from "../../../types/server"
+import { ServerFilterOptions, serverDBResponse } from "../../../types/server/server"
+import { ServerBasic, ServerDisk, ServerNetwork, ServerPartition, ServerRepository } from "../../../types/server/server.db"
+
 import { logger } from "../../../utils/logger"
 import { serverBasicRepository } from "../../repositories/server/server.basic.repository"
 import { serverDiskRepository } from "../../repositories/server/server.disk.repository"

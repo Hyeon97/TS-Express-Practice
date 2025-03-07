@@ -1,6 +1,8 @@
 import { executeQuery } from "../../../db/connection"
 import { ApiError } from "../../../errors/api-error"
-import { OsType, ServerBasic, ServerFilterOptions, StateType } from "../../../types/server"
+import { OsType, StateType, ServerFilterOptions } from "../../../types/server/server"
+import { ServerBasic } from "../../../types/server/server.db"
+
 import { logger } from "../../../utils/logger"
 
 export class ServerBasicRepository {

@@ -1,5 +1,5 @@
 import { executeQuery } from "../../../db/connection"
-import { ServerPartition } from "../../../types/server"
+import { ServerPartition } from "../../../types/server/server.db"
 import { logger } from "../../../utils/logger"
 
 export class ServerPartitionRepository {

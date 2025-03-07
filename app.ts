@@ -47,7 +47,7 @@ class App {
     })
 
     // API 라우트
-    this.app.use(`${config.apiPrefix}/users`, new UserRoutes().router)
+    // this.app.use(`${config.apiPrefix}/users`, new UserRoutes().router)
     this.app.use(`${config.apiPrefix}/servers`, new ServerRoutes().router)
     logger.info(`사용자 API 라우트가 ${config.apiPrefix}/users 경로에 등록되었습니다.`)
   }
